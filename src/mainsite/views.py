@@ -69,6 +69,11 @@ class UserPageView(DetailView):
     model = User
     template_name = 'user-page.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if 'pk' not in kwargs:
+           return redirect(reverse_lazy('account-view', kwargs={'pk': self.request.user.id}))
+        return super().dispatch(request, *args, **kwargs)  
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['me'] = self.request.user
