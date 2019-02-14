@@ -18,7 +18,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mainsite',
-    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -67,10 +66,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
+    # 'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
+AUTH_USER_MODEL = 'mainsite.User'
 
 LANGUAGE_CODE = 'en-us'
 
