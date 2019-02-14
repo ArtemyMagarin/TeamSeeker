@@ -12,13 +12,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         ('vk', 'Login with VK')
     )
 
-    email = models.EmailField('email', unique=True)
-    first_name = models.CharField('name', max_length=255)
-    last_name = models.CharField('surname', max_length=255)
-    avatar_url = models.URLField(null=True, blank=False)
+    email = models.EmailField('Email', unique=True)
+    first_name = models.CharField('Имя', max_length=255)
+    last_name = models.CharField('Фамилия', max_length=255)
+    avatar_url = models.URLField('Аватар', null=True, blank=False)
     login_method = models.CharField(max_length=2, choices=LOGIN_METHODS)
     
-    date_joined = models.DateTimeField('registered', auto_now_add=True)
+    date_joined = models.DateTimeField('Дата регистрации', auto_now_add=True)
     is_active = models.BooleanField('is_active', default=True)
     is_staff = models.BooleanField('is_staff', default=False)
 
@@ -54,10 +54,10 @@ class VacancyType(models.Model):
 
 
 class Vacancy(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.CharField(null=True, max_length=3000)
-    salary = models.CharField(max_length=255, default='По договоренности')
-    is_archived = models.BooleanField(default=False)
+    name = models.CharField('Название', max_length=255)
+    description = models.CharField('Описание', null=True, max_length=3000)
+    salary = models.CharField('Вознаграждение', max_length=255, default='По договоренности')
+    is_archived = models.BooleanField('Скрыть вакансию', default=False)
     project = models.ForeignKey('Project', on_delete=models.CASCADE)
     vacancy_type = models.ForeignKey(VacancyType, on_delete=models.CASCADE)
 
@@ -92,8 +92,8 @@ class ProjectMember(models.Model):
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    status = models.CharField(max_length=100, choices=MEMBER_STATUSES)
-    role = models.CharField(max_length=20, choices=ROLES)
+    status = models.CharField('Статус', max_length=100, choices=MEMBER_STATUSES)
+    role = models.CharField('Роль в проекте', max_length=20, choices=ROLES)
     vacancy = models.ForeignKey(Vacancy, on_delete=models.PROTECT, null=True)
     project = models.ForeignKey('Project', on_delete=models.CASCADE)
 
@@ -114,12 +114,12 @@ class Project(models.Model):
     )
     
 
-    name = models.CharField(max_length=512)
-    description = models.CharField(null=True, max_length=3000)
-    status = models.CharField(max_length=20, choices=PROJECT_STATUSES)
-    estimated_start_date = models.DateTimeField()
-    estimated_finish_date = models.DateTimeField()
-    is_published = models.BooleanField()
+    name = models.CharField('Название', max_length=512)
+    description = models.CharField('Описание',null=True, max_length=3000)
+    status = models.CharField('Статус', max_length=20, choices=PROJECT_STATUSES)
+    estimated_start_date = models.DateTimeField('Дата начала проекта')
+    estimated_finish_date = models.DateTimeField('Дата окончания проекта')
+    is_published = models.BooleanField('Проект доступен в поиске')
 
     def duration_in_month(self):
         return (((estimated_finish_date - estimated_start_date).days / 30) ** 2) ** 0.5
@@ -138,3 +138,7 @@ class WallPost(models.Model):
 
 class AbstractImage(models.Model):
     image = models.ImageField(upload_to='images/')
+
+
+# TODO: Добавить модельку которая будет реализовывать "резюме" юзера:
+# опыт работы, компетенции
