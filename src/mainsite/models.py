@@ -41,10 +41,12 @@ class User(AbstractBaseUser, PermissionsMixin):
             first_name=self.first_name, 
             last_name=self.last_name).strip()
 
-
     def get_short_name(self):
         return self.first_name.strip()
 
+
+    def get_avatar_url(self):
+        return self.avatar_url if self.avatar_url != None else ''
 
 
 class VacancyType(models.Model):
@@ -117,13 +119,15 @@ class Project(models.Model):
     status = models.CharField(max_length=20, choices=PROJECT_STATUSES)
     estimated_start_date = models.DateTimeField()
     estimated_finish_date = models.DateTimeField()
+    is_published = models.BooleanField()
 
     def duration_in_month(self):
         return (((estimated_finish_date - estimated_start_date).days / 30) ** 2) ** 0.5
 
 
+# TODO: Extend me!
 class WallPost(models.Model):
-    message = CharField(max_length=5000)
+    message = models.CharField(max_length=5000)
     # если не указан, значит пост создан автоматически
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     # если не указан, значит пост личный, на странице создателя
@@ -131,3 +135,6 @@ class WallPost(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
 
+
+class AbstractImage(models.Model):
+    image = models.ImageField(upload_to='images/')
