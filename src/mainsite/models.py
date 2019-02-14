@@ -59,6 +59,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 class VacancyType(models.Model):
     type_name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.type_name
+
 
 class Vacancy(models.Model):
     name = models.CharField('Название', max_length=255)
@@ -67,6 +70,9 @@ class Vacancy(models.Model):
     is_archived = models.BooleanField('Скрыть вакансию', default=False)
     project = models.ForeignKey('Project', on_delete=models.CASCADE)
     vacancy_type = models.ForeignKey(VacancyType, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class ProjectMember(models.Model):
@@ -104,6 +110,11 @@ class ProjectMember(models.Model):
     vacancy = models.ForeignKey(Vacancy, on_delete=models.PROTECT, null=True)
     project = models.ForeignKey('Project', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(user)
+
+
+
 
 class Project(models.Model):
     PROJECT_STATUSES__RECRUITING = 'recruiting'
@@ -129,7 +140,13 @@ class Project(models.Model):
     is_published = models.BooleanField('Проект доступен в поиске')
 
     def duration_in_month(self):
-        return (((estimated_finish_date - estimated_start_date).days / 30) ** 2) ** 0.5
+        return int((((self.estimated_finish_date - self.estimated_start_date).days / 30) ** 2) ** 0.5)
+
+    def get_absolute_url(self):
+        return reverse_lazy('project-detail-view', kwargs={'pk': self.id})
+
+    def __str__(self):
+        return self.name
 
 
 # TODO: Extend me!

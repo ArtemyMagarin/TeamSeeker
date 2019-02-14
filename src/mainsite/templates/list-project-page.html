@@ -1,0 +1,26 @@
+{% extends "base-page.html" %}
+{% load static %}
+
+{% block title %}Новый проект - TeamSeeker{% endblock %}
+{% block content %}
+    <div class="personal-main">
+        <div class="personal-menu">
+            <ul>
+                <li><a href="#">Сообщения</a></li>
+                <li><a href="#">Приглашения</a></li>
+                <li><a href="#">Редактировать</a></li>
+                <li><a href="#" class="red">Создать проект</a></li>
+            </ul>
+        </div>
+        
+        {% for object in object_list %}
+        <div class="edit-form">
+            <p>{{ object.name }}</p>
+            <p>{{ object.description }}</p>
+            <p>{{ object.status }}</p>
+            <p>{{ object.duration_in_month }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
