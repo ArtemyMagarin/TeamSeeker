@@ -121,3 +121,13 @@ class Project(models.Model):
     def duration_in_month(self):
         return (((estimated_finish_date - estimated_start_date).days / 30) ** 2) ** 0.5
 
+
+class WallPost(models.Model):
+    message = CharField(max_length=5000)
+    # если не указан, значит пост создан автоматически
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    # если не указан, значит пост личный, на странице создателя
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    edited = models.DateTimeField(auto_now=True)
+
