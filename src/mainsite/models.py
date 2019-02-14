@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.urls import reverse_lazy
 
 from .managers import UserManager
 
@@ -46,11 +47,13 @@ class User(AbstractBaseUser, PermissionsMixin):
             last_name=self.last_name).strip()
 
     def get_short_name(self):
-        return self.first_name.strip()
+        return "{first_name} {last_name}.".format(
+            first_name=self.first_name, 
+            last_name=self.last_name[:1]).strip()
 
 
     def get_avatar_url(self):
-        return self.avatar_url if self.avatar_url != None else ''
+        return self.avatar_url if self.avatar_url != None else '/static/mainsite/img/user.png'
 
 
 class VacancyType(models.Model):

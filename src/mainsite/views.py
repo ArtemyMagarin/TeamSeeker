@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.views.generic import RedirectView
@@ -7,8 +7,8 @@ from django.contrib.auth import logout, login, authenticate
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, AccessMixin
 
-from .forms import RegisterForm, LoginForm
-from .models import User
+from .forms import RegisterForm, LoginForm, ProjectForm, VacancyForm
+from .models import User, Project, ProjectMember, Vacancy
 
 
 class UserLoginView(UserPassesTestMixin, AccessMixin, FormView):
@@ -76,10 +76,45 @@ class UserPageView(DetailView):
         return context
 
 
+class ProjectCreateView(FormView):
+    form_class = ProjectForm
+    template_name = 'create-project-page.html'
+    success_url = reverse_lazy('login-view')
+
+    def form_valid(self, form):
+        p = Project.objects.create(**form.cleaned_data)
+        pm = ProjectMember.objects.create(
+            user=self.request.user,
+            status='in',
+            role='owner',
+            project=p
+        )
+        return super().form_valid(form)
 
 
-class ProjectCreateView:
-    pass
+class VacancyCreateView(FormView):
+    form_class = VacancyForm
+    template_name = 'create-project-page.html'
+    success_url = reverse_lazy('login-view')
+
+    def get_initial(self):
+        initial = super(VacancyCreateView, self).get_initial()
+        p = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        initial['project'] = p
+        return initial
+
+
+    def form_valid(self, form):
+        v = Vacancy.objects.create(**form.cleaned_data)
+        pm = ProjectMember.objects.create(
+            user=self.request.user,
+            status='in',
+            role='owner',
+            project=form.cleaned_data['project'],
+            vacancy=v
+        )
+        return super().form_valid(form)
+
 
 
 class ProjectInvitePeopleView:

@@ -1,0 +1,25 @@
+{% extends "base-page.html" %}
+{% load static %}
+
+{% block title %}Новый проект - TeamSeeker{% endblock %}
+{% block content %}
+    <div class="personal-main">
+        <div class="personal-menu">
+            <ul>
+                <li><a href="#">Сообщения</a></li>
+                <li><a href="#">Приглашения</a></li>
+                <li><a href="#">Редактировать</a></li>
+                <li><a href="#" class="red">Создать проект</a></li>
+            </ul>
+        </div>
+        
+        <div class="edit-form">
+            <form method="post">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" value="Создать">
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

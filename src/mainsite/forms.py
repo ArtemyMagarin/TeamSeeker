@@ -32,6 +32,32 @@ class RegisterForm(forms.Form):
 
 
 class ProjectForm(forms.ModelForm):
+    MONTHS = {
+                1:'Январь,', 2:'Февраль,', 3:'Март,', 4:'Апрель,',
+                5:'Май,', 6:'Июнь,', 7:'Июль,', 8:'Август,',
+                9:'Сентябрь,', 10:'Октябрь,', 11:'Ноябрь,', 12:'Декабрь,'
+            }
+    YEARS = [i for i in range(2009, 2029)]
+
+    estimated_start_date = forms.DateField(
+        label="Дата старта проекта",
+        widget=forms.SelectDateWidget(
+            empty_label=("Choose Year", "Choose Month", "Choose Day"),
+            months=MONTHS,
+            years=YEARS
+        ),
+    )
+
+    estimated_finish_date = forms.DateField(
+        label="Дата окончания проекта",
+        widget=forms.SelectDateWidget(
+            empty_label=("Choose Year", "Choose Month", "Choose Day"),
+            months=MONTHS,
+            years=YEARS
+        ),
+    )
+
+
     class Meta:
         model = Project
         fields = [

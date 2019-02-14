@@ -27,8 +27,8 @@
                 </nav>
             </div>
             <div class="personal-account">
-                <a href="#" class="open-personal-menu"><img src="{% static "mainsite/img/user.png" %}" alt="Личный кабинет"></a>
-                <a href="#" class="open-personal-menu">Гость</a>
+                <a href="#" class="open-personal-menu"><img src="{{me.get_avatar_url}}"" alt="Личный кабинет"></a>
+                <a href="#" class="open-personal-menu">{{me.get_short_name}}</a>
             </div>
             <div class="personal-menu-my" style="display: none">
                 <div class="exit"><a href="#">Выйти</a></div>
