@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <link href='{% static "mainsite/css/style.css" %}' rel="stylesheet" type="text/css">
+    <meta name="viewport" content="width=device-width" />
+    <title>{% block title %}TeamSeeker{% endblock %}</title>
+</head>
+
+<body style='{% block bodystyle %}{% endblock %}'>
+    <div class="logo">
+        <h1>TeamSeeker</h1>
+    </div>
+    <div class="parent">
+        <div class="registration-form">
+            {% block form %}
+            {% endblock %}
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>

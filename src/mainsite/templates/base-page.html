@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <link href='{% static "mainsite/css/main-style.css" %}' rel="stylesheet" type="text/css">
+    <meta name="viewport" content="width=device-width" />
+    <title>{% block title %}TeamSeeker{% endblock %}</title>
+</head>
+
+<body class="white" style='{% block bodystyle %}{% endblock %}'>
+    <header>
+        <div class="header-box">
+            <div class="main-navigation">
+                <div class="logo">
+                    <span>TeamSeeker</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#">Проекты</a></li>
+                        <li><a href="#">Хакатон</a></li>
+                        <li><a href="#">Поиск</a></li>
+                        <li><a href="#">Помощь</a></li>
+                        <li><a href="#">Feedback</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="personal-account">
+                <a href="#" class="open-personal-menu"><img src="{% static "mainsite/img/user.png" %}" alt="Личный кабинет"></a>
+                <a href="#" class="open-personal-menu">Гость</a>
+            </div>
+            <div class="personal-menu-my" style="display: none">
+                <div class="exit"><a href="#">Выйти</a></div>
+                <div class="messages"><a href="#">Сообщения: <span class="new-messages">2</span></a></div>
+                <div class="invitations"><a href="#">Приглашения: <span class="new-invitations">2</span></a></div>
+            </div>
+        </div>
+    </header>
+
+    {% block content %}
+    {% endblock %}
+
+    <footer class="footer">
+        <p>TeamSeeker 2019</p>
+    </footer>
+    <script src="{% static "mainsite/js/main-script.js" %}"></script>
+</body>
+</html>

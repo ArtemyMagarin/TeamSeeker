@@ -6,10 +6,14 @@ from .managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    LOGIN_METHOD__EMAIL = 'e'
+    LOGIN_METHOD__GOOGLE = 'g'
+    LOGIN_METHOD__VK = 'vk'
+    
     LOGIN_METHODS = (
-        ('g', 'Login with Google'),
-        ('e', 'Login with Email'),
-        ('vk', 'Login with VK')
+        (LOGIN_METHOD__GOOGLE, 'Login with Google'),
+        (LOGIN_METHOD__EMAIL, 'Login with Email'),
+        (LOGIN_METHOD__VK, 'Login with VK')
     )
 
     email = models.EmailField('Email', unique=True)

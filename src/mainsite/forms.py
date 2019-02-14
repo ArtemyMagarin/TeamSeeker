@@ -1,4 +1,8 @@
 from django import forms
+from django.forms import ValidationError
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import authenticate
+
 from .models import User, Project, AbstractImage, Vacancy 
 
 class RegisterForm(forms.Form):
@@ -80,4 +84,25 @@ class UserForm(forms.Form):
             self.add_error('new_password', ValidationError('Введенные пароли не совпадают'))
 
        
+        return cleaned_data
+
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(label='Email', required=True)
+    password = forms.CharField(label='Пароль', required=True, widget=forms.PasswordInput())
+
+    def clean(self):
+        cleaned_data = super(LoginForm, self).clean()
+
+        email = cleaned_data.get('email')
+        password = cleaned_data.get('password')
+
+        u = authenticate(
+            email=email,
+            password=password,
+        )
+
+        if u is None:
+            self.add_error('email', ValidationError('Неверный email или пароль'))            
+
         return cleaned_data

@@ -1,0 +1,742 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-image: url("./images/main-page.jpg");
+    background-size: cover;
+    background-position:0 -300px;
+}
+
+div.logo {
+    display: flex;
+    align-items: center;
+}
+
+div.logo span {
+    font-family: "Myriad Pro", SansSerif, sans-serif;
+    font-size: 23px;
+    color: #FBF5F3;
+    font-weight: bold;
+}
+
+nav ul {
+    display: flex;
+    flex-direction: row;
+    align-content: end;
+    align-items: center;
+}
+
+nav ul li {
+    list-style: none;
+}
+
+nav ul li a {
+    color: #FBF5F3;
+    font-family: "Myriad Pro", SansSerif, sans-serif;
+    font-size: 14px;
+    list-style: none;
+    text-decoration: none;
+    padding: 10px;
+    transition-duration: 0.5s;
+}
+
+nav {
+    display: flex;
+    flex-direction: row;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #13293D;
+
+}
+
+.main-navigation {
+    padding: 15px 0;
+    display: flex;
+    flex-direction: row;
+    background-color: #13293D;
+    text-transform: uppercase;
+}
+
+.header-box {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    width: 80%;
+    
+}
+
+nav ul li:first-child {
+    margin-left: 60px;
+}
+
+.main-navigation ul li a:hover {
+    text-decoration: underline;
+    color: #b9b6c4;
+}
+
+.personal-account {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+}
+
+.personal-account img {
+    width: 35px;
+}
+
+.personal-account a {
+    color: #FBF5F3;
+    font-family: "Myriad Pro", SansSerif, sans-serif;
+    font-size: 14px;
+    padding: 10px;
+    transition-duration: 0.5s;
+}
+
+.main-banner h1 {
+    color: #FBF5F3;
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    font-size: 63px;
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: 2px 2px 0 #13293D;
+    padding-top: 100px;
+}
+
+.big-button {
+    width: 160px;
+    border-radius: 6px;
+    margin: 20px auto 0;
+}
+
+
+
+.small-button a {
+    display: block;
+    padding: 5px 10px;
+    color: white;
+    font-family: "Myriad Pro", SansSerif, sans-serif;
+    text-align: center;
+    text-decoration: none;
+}
+
+.red{
+    background-color: #BF4342 !important;
+}
+
+.button {
+    background-color: #006494;
+    transition-duration: 0.5s;
+}
+
+.button:hover {
+    background-color: #307fb3;
+}
+
+.big-button a {
+    display: block;
+    padding: 20px 10px;
+    color: white;
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    text-align: center;
+    text-decoration: none;
+}
+
+.main-content {
+    margin: 0 auto 0;
+    position: relative;
+    top: -60px;
+    max-width: 1200px;
+    background-color: #FBF5F3;
+    min-height: 1000px;
+}
+
+.main-box {
+    background-color: #FBF5F3;
+}
+
+.search-box {
+    background-color: #006494;
+}
+
+.search-box form {
+    display: grid;
+    grid-template-columns: 80% 40px auto;
+    grid-column-gap: 20px;
+    grid-template-rows: 60px;
+    align-items: center;
+}
+
+
+.search-box .cool-search{
+    grid-column-start: 1;
+    grid-column-end: 4;
+    background-color: #0c1926;
+}
+
+.cool-search{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.max-width{
+    min-width: 980px;
+}
+
+.flex-col{
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-col div{
+    padding: 5px;
+}
+
+
+.cool-search > div{
+    display: flex;
+    padding: 10px;
+}
+
+.cool-search label{
+    color: #FBF5F3;
+    font-size: 13px;
+    font-family: "Myriad Pro", SansSerif, sans-serif;
+}
+
+.search-box form > input {
+    outline: none;
+    border: none;
+    height: 40px;
+}
+
+.search-box input[type="text"] {
+    padding: 10px;
+    box-sizing: border-box;
+    margin-left: 10px;
+    background-color: #FBF5F3;
+}
+
+input{
+    background-color: #13293D;
+}
+
+.search-box form input[type="submit"] {
+    margin-right: 20px;
+    background-color: #BF4342;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.projects{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-column-gap: 40px;
+    justify-items: stretch;
+}
+
+.project{
+    margin-top: 40px;
+    //border: 2px solid #006494;
+    box-shadow: 0 6px 5px -2px rgba(14, 49, 64, 0.85);
+    
+}
+
+.project h3{
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    text-align:center;
+    text-transform: uppercase;
+    background-color: #006494;
+    padding: 10px;
+    color: #FBF5F3;
+    font-size: 15px;
+}
+
+.project p{
+    padding: 10px;
+    background-color: #006494;
+    color: #FBF5F3;
+}
+
+.project .project-info{
+    background-color: #0c1926;
+}
+
+.project{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #dbdae8;
+    font-family: "Myriad Pro", SansSerif, sans-serif;
+    font-size: 14px;
+}
+
+.sidebar{
+    background-color: #006494;
+    
+    
+}
+
+.project .project-info{
+    background-color: #0c1926;
+    color: #FBF5F3;
+}
+
+.project .project-info ul li{
+    list-style: none;
+    padding: 3px 0 0 10px;
+}
+
+.white{
+    background: none;
+    background-color: #FBF5F3;
+}
+
+.personal-main{
+    max-width: 1200px;
+    margin: 50px auto 0;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1.5fr;
+    grid-column-gap: 40px;
+    grid-row-gap: 30px;
+    align-self: stretch;
+}
+.userprofile{
+    grid-column: 2/4;
+    display:flex;
+    flex-direction: row;
+
+}
+.personal-main > div{
+    background-color: #006494;
+    box-shadow: 0 6px 5px -2px rgba(14, 49, 64, 0.85);
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    
+    font-size: 14px;
+    color: #FBF5F3;
+}
+
+.personal-main .photo img{
+    width: 90%;
+    display: block;
+    margin: 4% auto;
+}
+
+.personal-main .photo h3{
+    text-align: center;
+    margin: 14px 0;
+    text-transform: uppercase;
+}
+
+
+.personal-data p{
+    padding: 5px 0;
+    font-size:16px;
+}
+
+.personal-data .data{
+    padding: 20px 30px;
+}
+
+.personal-main > div.personal-menu{
+    padding: 20px 30px;
+    box-sizing: border-box;
+}
+
+.personal-main > div{
+    box-sizing: border-box;
+}
+
+.photo{
+    padding: 20px;
+}
+
+.personal-menu{
+    align-self: start;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    
+}
+
+.personal-menu ul{
+    height: 100%;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.personal-menu ul a{
+     color: white;
+     padding: 20px;
+     margin-bottom: 20px;
+     background-color: #13293D;
+     display: block;
+     text-decoration: none;
+     text-transform: uppercase;
+     text-align:center;
+     transition-duration: 0.5s;
+     font-size:16px;
+     font-weight:600;
+     
+ }
+ .personal-menu ul a:hover{
+     background: #224568;
+ }
+
+.personal-menu ul li:last-child a{
+    margin-bottom: 0;
+}
+
+.personal-menu ul li{
+    list-style: none;
+    
+}
+
+.personal-main div h2{
+    font-size: 18px;
+    padding: 20px;
+    box-sizing: content-box;
+    background-color: #13293D;
+    text-transform: uppercase;
+    font-family: 'Century Gothic', AppleGothic, sans-serif;
+    text-align: center;
+    font-weight:700;
+
+}
+
+div .projects-list{
+    padding: 0;
+}
+
+.project-item a{
+    text-align: center;
+    display: block;
+    padding: 14px 0 10px;
+    margin: 10px 30px;
+    border: 2px solid #FBF5F3;
+    color: #FBF5F3;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size:18px;
+}
+
+.project-item a{
+    transition-duration: 0.5s;
+     text-align: center;
+     display: block;
+     padding: 10px;
+     margin: 10px 30px;
+ }
+
+div.now > div a{
+    
+}
+
+.project-item a:hover{
+    background-color: rgba(219, 218, 232, 0.35);
+}
+
+.footer{
+    background-color: #13293D;
+    text-align: center;
+    color: #FBF5F3;
+    font-family: "Myriad Pro", SansSerif, sans-serif;
+    margin-top:5%;
+    padding: 10px 0 100px;
+}
+
+.personal-menu-my{
+    position: absolute;
+    right: 0;
+    top:58px;
+    display: flex;
+    flex-direction: column;
+    background: #13293D;
+
+}
+
+.personal-menu-my > div{
+
+}
+
+.personal-menu-my > div a{
+    display: block;
+    color: #FBF5F3;
+    padding: 15px 20px;
+    text-decoration: none;
+    font-family: "Calibri";
+    text-transform: uppercase;
+    text-align: right;
+    font-size:15px;
+    transition-duration: 0.5s;
+    
+
+}
+
+.personal-menu-my > div a:hover{
+    background: #224568;
+    
+
+}
+
+div.now > div a.my-project{
+    background: #13293D;
+
+}
+
+.message-table{
+    grid-column-start: 2;
+    grid-column-end: 4;
+}
+
+.message-table table{
+    padding: 10px;
+}
+
+.message-table table {
+    width: 100%;
+    padding: 10px;
+}
+
+.message-table table th{
+    text-align:left ;
+}
+
+.message-table table td{
+    padding: 20px 0;
+}
+
+.message-table table td:first-child{
+    width: 20%;
+}
+
+.message-table table td:nth-child(2){
+    width: 10%;
+}
+
+.message-table table tr th{
+    padding-bottom: 10px;
+    border-bottom: solid 2px #FBF5F3;
+    font-size:15px;
+    text-align: center;
+}
+
+.edit-form label{
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    font-weight: lighter;
+    text-transform: uppercase;
+    display: block;
+    margin: 14px 0 6px;
+    font-size: 12px;
+}
+
+.edit-form input{
+    outline: none;
+    border: none;
+}
+
+.edit-form input:not([type="submit"]) {
+    transition-duration: 0.5s;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 17px 15px;
+    background-color: rgba(12, 25, 38, 0.85);
+}
+
+.edit-form{
+    grid-column-start: 2;
+    grid-column-end: 4;
+    padding: 20px 40px;
+}
+
+.knopka{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    text-decoration: none;
+    
+}
+.knopka a{
+    text-decoration: none;
+    transition-duration: 0.5s;
+}
+button{
+    
+    margin-top:0;
+    
+    
+}
+
+.part{
+
+ display: inline-block;
+ border: none;
+ color: #fbf5f3;
+
+ 
+ font-family: 'Century Gothic', sans-serif;
+ width: auto;
+ height: auto;
+ font-size: 26px;
+ padding: 10px 40px;
+ 
+ background-color: #bf4342;
+}
+.part:hover, .part:active{
+ border: none;
+ color: #fbf5f3;
+ background-color: #da5d5c;
+}
+.edit-form label{
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    font-weight: lighter;
+    text-transform: uppercase;
+    display: block;
+    margin: 14px 0 6px;
+    font-size: 12px;
+    font-size:15px;
+}
+
+.edit-form input{
+    outline: none;
+    border: none;
+}
+
+.edit-form input:not([type="submit"]):not([type="checkbox"]), textarea {
+    transition-duration: 0.5s;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 17px 15px;
+    color: #FBF5F3;
+    font-size:15px;
+    outline: none;
+    background-color: rgba(12, 25, 38, 0.85);
+}
+
+.edit-form{
+    grid-column-start: 2;
+    grid-column-end: 4;
+    padding: 20px 40px;
+}
+
+.edit-form input:not([type="submit"]):hover, textarea:hover{
+    background-color: rgba(20, 59, 77, 0.82);
+    resize: none;
+    outline: none;
+}
+
+.abilities{
+    margin-top:5%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    
+    
+}
+
+.abilities div{
+    display:flex;
+    
+    
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding:0;
+    margin-bottom: 5%;
+}
+
+.abilities input{
+    width:10% !important;
+    margin:0;
+}
+
+.abilities label{
+    
+    margin:0;
+}
+
+
+
+
+.edit-form input[type="submit"]{
+    background-color: #BF4342;
+    color: #FBF5F3;
+    padding: 20px 40px;
+    margin: 20px auto;
+}
+
+@media screen and (max-width: 500px) {
+    .main-navigation nav{
+     display:none;
+ }
+
+ .personal-main{
+     display:grid;
+     max-width:500px;
+     width:90%;
+     grid-template-columns: 50% 50%;; 
+     grid-template-rows: 0.5fr 1fr auto ;
+     margin:0;
+     grid-gap:15px;
+     justify-content: center;
+     margin:5% auto;
+ }
+ .userprofile .photo{
+     display:none;
+ }
+
+ .userprofile{
+    grid-column:1/-1;
+    grid-row:2;
+    display:flex;
+    flex-direction: column;
+ }
+
+ .personal-menu{
+     GRID-COLUMN:1/-1;
+     grid-row:1;
+}
+.personal-menu li a{
+    font-size: 20px;
+}
+ .projects-list {
+    grid-row:3;
+    grid-column:1;
+    font-size: 20px;
+    
+ }
+.project-item{
+    
+    padding-right:6%;
+}
+.project-item a{
+    width:60%;
+    margin-right:6%;
+    text-align: center;
+}
+ .now{
+    grid-row:3;
+    grid-column:2;
+    font-size: 20px;
+ }
+ .footer{
+     margin:0;
+ }
+ .data{
+     font-size:20px;
+ }
+
+}
