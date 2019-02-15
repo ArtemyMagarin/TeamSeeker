@@ -18,30 +18,22 @@
 
 
 {% block content %}
-        <div class="card-columns">
-            {% for p in projects %}
-            <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">{{p.project.name}}</h5>
-                  <p class="card-text">Роль: {{p.get_role_display}}</p>
-                  <p class="card-text">Статус: {{p.get_status_display}}</p>
-                  <p class="card-text">
-                    <small class="text-muted">
-                        <a href="{{p.project.get_absolute_url}}">
-                            Перейти
-                        </a>
-                    </small>
-                  </p>
-                </div>
-            </div>            
-            {% endfor %}
-        </div>
-
-        <div class="projects-list">
-            {% for p in projects %}
-            
-            {% endfor %}
-        </div>
-
-
+    <div class="card-columns">
+        {% for p in projects %}
+        <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{p.project.name}}</h5>
+              <p class="card-text">Роль: {{p.get_role_display}}</p>
+              <p class="card-text">Статус: {{p.get_status_display}}</p>
+              <p class="card-text">
+                <small class="text-muted">
+                    <a href="{{p.project.get_absolute_url}}">
+                        Перейти
+                    </a>
+                </small>
+              </p>
+            </div>
+        </div>            
+        {% endfor %}
+    </div>
 {% endblock %}

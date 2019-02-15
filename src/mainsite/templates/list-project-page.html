@@ -2,25 +2,39 @@
 {% load static %}
 
 {% block title %}Новый проект - TeamSeeker{% endblock %}
+
+{% block left_column %}
+    <div class="userprofile column-block p-0"> 
+        <div class="photo">
+            <img class="portrait" src="{{user.get_avatar_url}}" alt="портрет"/>
+            <h4 class="name">{{user.get_full_name}}</h4>
+        </div>
+    </div>
+    <div class="personal-data column-block">
+        Email: <a href="mailto:{{user.email}}">{{user.email}}</a>
+    </div>
+{% endblock %}
+
+
+
 {% block content %}
-    <div class="personal-main">
-        <div class="personal-menu">
-            <ul>
-                <li><a href="#">Сообщения</a></li>
-                <li><a href="#">Приглашения</a></li>
-                <li><a href="#">Редактировать</a></li>
-                <li><a href="#" class="red">Создать проект</a></li>
-            </ul>
-        </div>
-        
+    <div class="card-columns">
         {% for object in object_list %}
-        <div class="edit-form">
-            <p>{{ object.name }}</p>
-            <p>{{ object.description }}</p>
-            <p>{{ object.status }}</p>
-            <p>{{ object.duration_in_month }}</p>
-        </div>
+        <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{ object.name }}</h5>
+              <p class="card-text">{{ object.description }}</p>
+              <p class="card-text">{{ object.status }}</p>
+              <p class="card-text">
+                <small class="text-muted">
+                    <a href="{{object.get_absolute_url}}">
+                        Перейти
+                    </a>
+                </small>
+              </p>
+            </div>
+        </div>            
         {% endfor %}
     </div>
-
 {% endblock %}
+

@@ -51,6 +51,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             first_name=self.first_name, 
             last_name=self.last_name[:1]).strip()
 
+    def get_absolute_url(self):
+        return reverse_lazy('account-view', kwargs={'pk': self.id})
+
 
     def get_avatar_url(self):
         return self.avatar_url if self.avatar_url != None else '/static/mainsite/img/user.png'
@@ -73,6 +76,13 @@ class Vacancy(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_edit_url(self):
+        return reverse_lazy('vacancy-update-view', kwargs={'project_id': self.project.id, 'pk':self.id})
+
+
+    def get_request_url(self):
+        return reverse_lazy('vacancy-request-view', kwargs={'project_id': self.project.id, 'pk':self.id})
 
 
 class ProjectMember(models.Model):
@@ -146,7 +156,7 @@ class Project(models.Model):
         return reverse_lazy('project-detail-view', kwargs={'pk': self.id})
 
     def __str__(self):
-        return self.last_name
+        return self.name
 
 
 # TODO: Extend me!

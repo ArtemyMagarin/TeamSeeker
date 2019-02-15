@@ -2,17 +2,22 @@
 {% load static %}
 
 {% block title %}Новый проект - TeamSeeker{% endblock %}
-{% block content %}
-    <div class="personal-main">
-        <div class="personal-menu">
-            <ul>
-                <li><a href="#">Сообщения</a></li>
-                <li><a href="#">Приглашения</a></li>
-                <li><a href="#">Редактировать</a></li>
-                <li><a href="#" class="red">Создать проект</a></li>
-            </ul>
+
+{% block left_column %}
+    <div class="userprofile column-block p-0"> 
+        <div class="photo">
+            <img class="portrait" src="{{user.get_avatar_url}}" alt="портрет"/>
+            <h4 class="name">{{user.get_full_name}}</h4>
         </div>
-        
+    </div>
+    <div class="personal-data column-block">
+        Email: <a href="mailto:{{user.email}}">{{user.email}}</a>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+    <!-- <div class="personal-main"> -->
         <div class="edit-form">
             <form method="post">
                 {% csrf_token %}
@@ -20,6 +25,6 @@
                 <input type="submit" value="Создать">
             </form>
         </div>
-    </div>
+    <!-- </div> -->
 
 {% endblock %}

@@ -9,7 +9,7 @@ from .views import (
     
     ProjectRequestsListView, UserRequestsListView, RequestsDetailView,
     ProjectInvitesListView, UserInvitesListView, InvitesDetailView,
-    RequestInviteActionView
+    RequestInviteActionView, ProjectMembersListView
 )
 
 
@@ -34,6 +34,9 @@ urlpatterns = [
     path('projects/<int:project_id>/jobs/<int:pk>/request/', VacancyRequestView.as_view(), name='vacancy-request-view'),
     path('users/<int:pk>/invite/jobs/<int:vacancy_id>/', VacancyInviteView.as_view(), name='vacancy-invite-view' ),
     
+    path('projects/<int:project_id>/members/', ProjectMembersListView.as_view(), name='project-members-list-view'),
+
+
     path('projects/<int:project_id>/requests/', ProjectRequestsListView.as_view(), name='project-requests-view'),
     path('projects/<int:project_id>/requests/<int:pk>/', RequestsDetailView.as_view(), name='project-request-view'),
     path('projects/<int:project_id>/requests/<int:pk>/<slug:action>/', RequestInviteActionView.as_view(), name='project-request-action-view'),

@@ -1,0 +1,51 @@
+{% extends "base-page.html" %}
+{% load static %}
+
+{% block title %}Список вакансий - TeamSeeker{% endblock %}
+
+{% block left_column %}
+    <div class="column-block "> 
+        <h3>{{project.name}}</h3>
+        <p class="m-0">{{project.description}}</p>
+    </div>
+    {% if role == 'manager' %}
+    <div class="column-block "> 
+        <p><a href="{{edit_url}}">Редактировать</a></p>
+        <p><a href="{{invites_url}}">Исходящие заявки</a></p>
+        <p><a href="{{requests_url}}">Входящие  заявки</a></p>
+        <p class="m-0"><a href="{{job_url}}">Новая вакансия</a></p>
+    </div>
+    {% endif %}
+    <div class="column-block">
+        <p class="m-0">Статус: {{project.get_status_display}}</p>
+    </div>
+    <div class="column-block">
+        <p><a href="{{project.get_absolute_url}}">Проект</a></p>
+        <p><a href="{{jobslist_url}}">Вакансии</a></p>
+        <p class="m-0" ><a href="{{members_url}}">Участники</a></p>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+    <h2>Заявки</h2>
+    {% if members %}
+    <div class="card-columns">
+        {% for p in members %}
+        <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{p.user.get_full_name}}</h5>
+              <p class="card-text">{{p.get_role_display}}</p>
+              <p class="card-text">{{p.vacancy.name}}</p>
+              <p class="card-text"><a href="/projects/{{project.id}}/requests/{{p.id}}/accept/">Принять в команду</a></p>
+
+
+            </div>
+        </div>            
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Заявок пока нет</p>
+    {% endif %}
+    
+{% endblock %}

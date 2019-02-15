@@ -738,3 +738,7 @@ button{
         width: 100%;
     }
 }
+
+.card {
+    max-width: 190px;
+}

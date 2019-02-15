@@ -93,6 +93,9 @@ class ProjectCreateView(FormView):
     form_class = ProjectForm
     template_name = 'create-project-page.html'
 
+    # def get_success_url(self):
+    #     return reverse_lazy('project-detail-view', kwargs={'pk': })
+
     def form_valid(self, form):
         p = Project.objects.create(**form.cleaned_data)
         pm = ProjectMember.objects.create(
@@ -101,7 +104,7 @@ class ProjectCreateView(FormView):
             role='owner',
             project=p
         )
-        return super().form_valid(form)
+        return redirect(reverse_lazy('project-detail-view', kwargs={'pk': p.id}))
 
 
 class ProjectListView(ListView):
@@ -138,8 +141,57 @@ class ProjectDetailView(DetailView):
         context['invites_url'] = reverse_lazy('project-invites-view', kwargs={'project_id': self.get_object().id})
         context['requests_url'] = reverse_lazy('project-requests-view', kwargs={'project_id': self.get_object().id})
         context['job_url'] = reverse_lazy('vacancy-create-view', kwargs={'project_id': self.get_object().id})
+        context['jobslist_url'] = reverse_lazy('vacancy-list-view', kwargs={'project_id': self.get_object().id})
+        context['members_url'] = reverse_lazy('project-members-list-view', kwargs={'project_id': self.get_object().id})
+        
+
+        context['jobs'] = self.get_object().vacancy_set.filter(is_archived=False)
+        context['founders'] = self.get_object().projectmember_set.filter(role='owner')
+        context['managers'] = self.get_object().projectmember_set.filter(role='manager')
+        context['employes'] = self.get_object().projectmember_set.filter(role='employee')
+        # context['employes'] = self.get_object().projectmember_set.filter(role='employee')
         
         return context
+
+
+class ProjectMembersListView(ListView):
+    model = ProjectMember
+    paginate_by = 20
+    template_name = 'members-page.html'
+
+    def get_queryset(self, **kwargs):
+        return ProjectMember.objects.filter(
+            Q(project__pk=self.kwargs['project_id'])
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['me'] = self.request.user
+        pm = ProjectMember.objects.filter(
+            user=self.request.user,
+            project__pk=self.kwargs['project_id'],
+            status='in'
+        )
+        if len(pm) == 0:
+            context['role'] = 'guest'
+        if len(pm) == 1:
+            if pm[0].status == 'in':
+                if pm[0].role == 'employee':
+                    context['role'] = 'employee'
+                else:
+                    context['role'] = 'manager'
+
+        context['edit_url'] = reverse_lazy('project-update-view', kwargs={'pk': self.kwargs['project_id']})
+        context['invites_url'] = reverse_lazy('project-invites-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['requests_url'] = reverse_lazy('project-requests-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['job_url'] = reverse_lazy('vacancy-create-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['jobslist_url'] = reverse_lazy('vacancy-list-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['members_url'] = reverse_lazy('project-members-list-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['members'] = self.get_queryset()
+        context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
+
+        return context
+
 
 
 class ProjectUpdateView(UpdateView):
@@ -162,10 +214,36 @@ class ProjectUpdateView(UpdateView):
 class VacancyListView(ListView):
     model = Vacancy
     paginate_by = 20
+    template_name = 'jobs-page.html'
+
+    def get_queryset(self):
+        return Vacancy.objects.filter(project__pk=self.kwargs['project_id'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['me'] = self.request.user
+        context['edit_url'] = reverse_lazy('project-update-view', kwargs={'pk': self.kwargs['project_id']})
+        context['invites_url'] = reverse_lazy('project-invites-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['requests_url'] = reverse_lazy('project-requests-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['job_url'] = reverse_lazy('vacancy-create-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['jobslist_url'] = reverse_lazy('vacancy-list-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['members_url'] = reverse_lazy('project-members-list-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['jobs'] = self.get_queryset()
+        context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
+
+        pm = ProjectMember.objects.filter(
+            user=self.request.user,
+            project__pk=self.kwargs['project_id']
+        )
+        if len(pm) == 0:
+            context['role'] = 'guest'
+        if len(pm) == 1:
+            if pm[0].status == 'in':
+                if pm[0].role == 'employee':
+                    context['role'] = 'employee'
+                else:
+                    context['role'] = 'manager'
+        
         return context
 
 
@@ -212,7 +290,7 @@ class VacancyCreateView(UserPassesTestMixin, AccessMixin, FormView):
 
 
     def get_success_url(self):
-        return reverse_lazy('vacancy-detail-view', kwargs={'project_id': self.kwargs['project_id'], 'pk': self.kwargs['pk']})
+        return reverse_lazy('project-detail-view', kwargs={'pk': self.kwargs['project_id']})
 
 
     def test_func(self):
@@ -238,17 +316,10 @@ class VacancyCreateView(UserPassesTestMixin, AccessMixin, FormView):
 
     def form_valid(self, form):
         v = Vacancy.objects.create(**form.cleaned_data)
-        pm = ProjectMember.objects.create(
-            user=self.request.user,
-            status='in',
-            role='owner',
-            project=form.cleaned_data['project'],
-            vacancy=v
-        )
         return super().form_valid(form)
 
 
-class VacancyRequestView(View):
+class VacancyRequestView(RedirectView):
 
     def get_success_url(self):
         return reverse_lazy('vacancy-detail-view', kwargs={'project_id': self.kwargs['project_id'], 'pk':self.kwargs['pk']})
@@ -310,42 +381,95 @@ class VacancyInviteView(UserPassesTestMixin, AccessMixin, View):
 class ProjectRequestsListView(ListView):
     model = ProjectMember
     paginate_by = 20
+    template_name = 'requests-list-page.html'
 
-    def get_queryselect(self, **kwargs):
+    def get_queryset(self, **kwargs):
         return ProjectMember.objects.filter(
-            Q(project__pk=kwargs['project_id']) &
+            Q(project__pk=self.kwargs['project_id']) &
             Q(status='entry_request')
         )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['me'] = self.request.user
+        pm = ProjectMember.objects.filter(
+            user=self.request.user,
+            project__pk=self.kwargs['project_id'],
+            status='in'
+        )
+        if len(pm) == 0:
+            context['role'] = 'guest'
+        if len(pm) == 1:
+            if pm[0].status == 'in':
+                if pm[0].role == 'employee':
+                    context['role'] = 'employee'
+                else:
+                    context['role'] = 'manager'
+
+        context['edit_url'] = reverse_lazy('project-update-view', kwargs={'pk': self.kwargs['project_id']})
+        context['invites_url'] = reverse_lazy('project-invites-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['requests_url'] = reverse_lazy('project-requests-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['job_url'] = reverse_lazy('vacancy-create-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['jobslist_url'] = reverse_lazy('vacancy-list-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['members_url'] = reverse_lazy('project-members-list-view', kwargs={'project_id': self.kwargs['project_id']})
+        
+        context['members'] = self.get_queryset()
+        context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
+
         return context
 
 
 class UserRequestsListView(ListView):
     model = ProjectMember
     paginate_by = 20
+    template_name = 'requests-list-page.html'
 
-    def get_queryselect(self, **kwargs):
+    def get_queryset(self, **kwargs):
         return ProjectMember.objects.filter(
-            Q(user__pk=kwargs['user_id']) &
-            Q(status='entry_request')
+            Q(project__pk=self.kwargs['project_id']) &
+            Q(status='invited')
         )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['me'] = self.request.user
+        pm = ProjectMember.objects.filter(
+            user=self.request.user,
+            project__pk=self.kwargs['project_id'],
+            status='in'
+        )
+        if len(pm) == 0:
+            context['role'] = 'guest'
+        if len(pm) == 1:
+            if pm[0].status == 'in':
+                if pm[0].role == 'employee':
+                    context['role'] = 'employee'
+                else:
+                    context['role'] = 'manager'
+
+        context['edit_url'] = reverse_lazy('project-update-view', kwargs={'pk': self.kwargs['project_id']})
+        context['invites_url'] = reverse_lazy('project-invites-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['requests_url'] = reverse_lazy('project-requests-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['job_url'] = reverse_lazy('vacancy-create-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['jobslist_url'] = reverse_lazy('vacancy-list-view', kwargs={'project_id': self.kwargs['project_id']})
+        context['members_url'] = reverse_lazy('project-members-list-view', kwargs={'project_id': self.kwargs['project_id']})
+        
+        context['members'] = self.get_queryset()
+        context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
+
         return context
+
+
 
 
 class ProjectInvitesListView(ListView):
     model = ProjectMember
     paginate_by = 20
+    template_name = 'requests-list-page.html'
 
-    def get_queryselect(self, **kwargs):
+    def get_queryset(self, **kwargs):
         return ProjectMember.objects.filter(
-            Q(project__pk=kwargs['project_id']) &
+            Q(project__pk=self.kwargs['project_id']) &
             Q(status='invited')
         )
 
@@ -359,7 +483,7 @@ class UserInvitesListView(ListView):
     model = ProjectMember
     paginate_by = 20
 
-    def get_queryselect(self, **kwargs):
+    def get_queryset(self, **kwargs):
         return ProjectMember.objects.filter(
             Q(user__pk=kwargs['user_id']) &
             Q(status='invited')
@@ -375,7 +499,7 @@ class UserInvitesListView(ListView):
 class RequestsDetailView(DetailView):
     model = ProjectMember
 
-    def get_queryselect(self, **kwargs):
+    def get_queryset(self, **kwargs):
         if 'user_id' in kwargs:
             return ProjectMember.objects.filter(
                 Q(user__pk=kwargs['user_id']) &
@@ -383,7 +507,7 @@ class RequestsDetailView(DetailView):
             )
         elif 'project_id' in kwargs:
             return ProjectMember.objects.filter(
-                Q(project__pk=kwargs['project_id']) &
+                Q(project__pk=self.kwargs['project_id']) &
                 Q(status='entry_request')
             )
 
@@ -396,7 +520,7 @@ class RequestsDetailView(DetailView):
 class InvitesDetailView(DetailView):
     model = ProjectMember
 
-    def get_queryselect(self, **kwargs):
+    def get_queryset(self, **kwargs):
         if 'user_id' in kwargs:
             return ProjectMember.objects.filter(
                 Q(user__pk=kwargs['user_id']) &
@@ -404,7 +528,7 @@ class InvitesDetailView(DetailView):
             )
         elif 'project_id' in kwargs:
             return ProjectMember.objects.filter(
-                Q(project__pk=kwargs['project_id']) &
+                Q(project__pk=self.kwargs['project_id']) &
                 Q(status='invited')
             )
 
@@ -418,14 +542,14 @@ class RequestInviteActionView(UserPassesTestMixin, AccessMixin, View):
 
     def test_func(self):
         user = self.request.user
-        pm = get_object_or_404(ProjectMember, pk=kwargs.get('pk', 0))
+        pm = get_object_or_404(ProjectMember, pk=self.kwargs.get('pk', 0))
 
         return (pm.user == user or len(ProjectMember.objects.filter(
                 Q(project=pm.project) &
                 Q(status='in') &
                 Q(user=user) &
                 (Q(role='owner') | Q(role='manager'))
-            ).values()) > 0) and kwargs.get('action') in ['accept', 'reject', 'delete']
+            ).values()) > 0) and self.kwargs.get('action') in ['accept', 'reject', 'delete']
 
     def get_success_url(self):
         url = reverse_lazy('my-account-view')

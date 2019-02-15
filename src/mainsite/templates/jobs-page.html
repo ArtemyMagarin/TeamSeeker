@@ -1,12 +1,12 @@
 {% extends "base-page.html" %}
 {% load static %}
 
-{% block title %}Новый проект - TeamSeeker{% endblock %}
+{% block title %}Список вакансий - TeamSeeker{% endblock %}
 
 {% block left_column %}
     <div class="column-block "> 
-        <h3>{{object.name}}</h3>
-        <p class="m-0">{{object.description}}</p>
+        <h3>{{project.name}}</h3>
+        <p class="m-0">{{project.description}}</p>
     </div>
     {% if role == 'manager' %}
     <div class="column-block "> 
@@ -17,10 +17,10 @@
     </div>
     {% endif %}
     <div class="column-block">
-        <p class="m-0">Статус: {{object.get_status_display}}</p>
+        <p class="m-0">Статус: {{project.get_status_display}}</p>
     </div>
     <div class="column-block">
-        <p><a href="{{object.get_absolute_url}}">Проект</a></p>
+        <p><a href="{{project.get_absolute_url}}">Проект</a></p>
         <p><a href="{{jobslist_url}}">Вакансии</a></p>
         <p class="m-0" ><a href="{{members_url}}">Участники</a></p>
     </div>
@@ -28,9 +28,9 @@
 
 
 {% block content %}
-    {% if jobs %}
     <h2>Вакансии</h2>
-    <div class="card-deck">
+    {% if jobs %}
+    <div class="card-columns">
         {% for job in jobs %}
         <div class="card">
             <div class="card-body">
@@ -47,49 +47,21 @@
                 </small>
               </p>
               {% endif %}
+              {% if role == 'manager' %}
+              <p class="card-text">
+                <small class="text-muted">
+                    <a href="{{job.get_edit_url}}">
+                        Редактировать
+                    </a>
+                </small>
+              </p>
+              {% endif %}
             </div>
         </div>            
         {% endfor %}
     </div>
+    {% else %}
+    <p>Вакансий пока нет</p>
     {% endif %}
-    {% if founders %}
-    <br/>
-    <h2>Основатели</h2>
-    <div class="card-deck">
-        {% for p in founders %}
-        <div class="card">
-            <div class="card-body">
-              <h5 class="card-title"><a href="{{p.user.get_absolute_url}}">{{p.user.get_full_name}}</a></h5>
-            </div>
-        </div>            
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% if managers %}
-    <br/>
-    <h2>Менеджеры</h2>
-    <div class="card-deck">
-        {% for p in managers %}
-        <div class="card">
-            <div class="card-body">
-              <h5 class="card-title"><a href="{{p.user.get_absolute_url}}">{{p.user.get_full_name}}</a></h5>
-            </div>
-        </div>   
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% if employes %}
-    <br/>
-    <h2>Участники</h2>
-    <div class="card-deck">
-        {% for p in employes %}
-        <div class="card">
-            <div class="card-body">
-              <h5 class="card-title"><a href="{{p.user.get_absolute_url}}">{{p.user.get_full_name}}</a></h5>
-              <p class="card-text">{{p.vacancy.name}}</p>
-            </div>
-        </div>  
-        {% endfor %}
-    </div>
-    {% endif %}
+    
 {% endblock %}
