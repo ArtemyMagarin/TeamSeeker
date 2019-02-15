@@ -5,7 +5,11 @@ from .views import (
     UserPageView, ProjectCreateView, ProjectListView,
     ProjectDetailView, ProjectUpdateView,
     VacancyCreateView, VacancyListView,  VacancyDetailView,
-    VacancyUpdateView,
+    VacancyUpdateView, VacancyRequestView, VacancyInviteView,
+    
+    ProjectRequestsListView, UserRequestsListView, RequestsDetailView,
+    ProjectInvitesListView, UserInvitesListView, InvitesDetailView,
+    RequestInviteActionView
 )
 
 
@@ -27,17 +31,30 @@ urlpatterns = [
     path('projects/<int:project_id>/jobs/<int:pk>/', VacancyDetailView.as_view(), name='vacancy-detail-view'),
     path('projects/<int:project_id>/jobs/<int:pk>/update/', VacancyUpdateView.as_view(), name='vacancy-update-view'),
    
-    #    Подача заявки
-    #    Приглашение в проект
+    path('projects/<int:project_id>/jobs/<int:pk>/request/', VacancyRequestView.as_view(), name='vacancy-request-view'),
+    path('users/<int:pk>/invite/jobs/<int:vacancy_id>/', VacancyInviteView.as_view(), name='vacancy-invite-view' ),
+    
+    path('projects/<int:project_id>/requests/', ProjectRequestsListView.as_view(), name='project-requests-view'),
+    path('projects/<int:project_id>/requests/<int:pk>/', RequestsDetailView.as_view(), name='project-request-view'),
+    path('projects/<int:project_id>/requests/<int:pk>/<slug:action>/', RequestInviteActionView.as_view(), name='project-request-action-view'),
+    
+    path('projects/<int:project_id>/invites/', ProjectInvitesListView.as_view(), name='project-invites-view'),
+    path('projects/<int:project_id>/invites/<int:pk>/', InvitesDetailView.as_view(), name='project-invite-view'),
+    path('projects/<int:project_id>/invites/<int:pk>/<slug:action>/', RequestInviteActionView.as_view(), name='project-invite-action-view'),
+    
+    path('users/<int:user_id>/requests/', UserRequestsListView.as_view(), name='user-requests-view'),
+    path('users/<int:user_id>/requests/<int:pk>/', RequestsDetailView.as_view(), name='user-request-view'),
+    path('users/<int:user_id>/requests/<int:pk>/<slug:action>/', RequestInviteActionView.as_view(), name='user-request-action-view'),
+    
+    path('users/<int:user_id>/invites/', UserInvitesListView.as_view(), name='user-invites-view'),
+    path('users/<int:user_id>/invites/<int:pk>/', InvitesDetailView.as_view(), name='user-invite-view'),
+    path('users/<int:user_id>/invites/<int:pk>/<slug:action>/', RequestInviteActionView.as_view(), name='user-invite-action-view'),
+
+
     #    Отображеие заявки в зависимости от того, кто юзер
 
     #    ---
     #    Скрывать инфу на страницах
     #    Скрывать инфу на проектах
-    #    
-    # path('projects/<int:project_id>/jobs/<int:pk>/request/', VacancyRequestView.as_view(), name='vacancy-request-view'),
-    
-    # path('/users/<int:pk>/invite/', ),
-    # path('/projects/<int:project_id>/jobs/<int:pk>/request/', ),
 
 ]

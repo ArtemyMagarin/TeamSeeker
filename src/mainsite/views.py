@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
-from django.views.generic import RedirectView, ListView, UpdateView
+from django.views.generic import RedirectView, ListView, UpdateView, View
 from django.urls import reverse_lazy
 from django.contrib.auth import logout, login, authenticate
 
@@ -219,17 +219,221 @@ class VacancyCreateView(UserPassesTestMixin, AccessMixin, FormView):
         return super().form_valid(form)
 
 
+class VacancyRequestView(View):
 
-class ProjectInvitePeopleView:
-    pass
+    def get_success_url(self):
+        return reverse_lazy('vacancy-detail-view', kwargs={'project_id': self.kwargs['project_id'], 'pk':self.kwargs['pk']})
+
+    def dispatch(self, request, *args, **kwargs):
+        user = request.user
+        status = 'entry_request'
+        role = 'employee'
+        vacancy = get_object_or_404(Vacancy, pk=kwargs.get('pk', 0))
+        project = vacancy.project
+        pm = ProjectMember.objects.create(
+            user=user,
+            status=status,
+            role=role,
+            project=project,
+            vacancy=vacancy
+        )
+        return super().dispatch(self, request, *args, **kwargs)
 
 
-class ProjectVacancyListView:
-    pass
+class VacancyInviteView(UserPassesTestMixin, AccessMixin, View):
+    def get_success_url(self):
+        return reverse_lazy('account-view', kwargs={'pk':self.kwargs['pk']})
+
+    def test_func(self):
+        vacancy = get_object_or_404(Vacancy, pk=kwargs.get('vacancy_id', 0))
+        project = vacancy.project
+        r = ProjectMember.objects.filter(
+                Q(project=project) &
+                Q(status='in') &
+                Q(user=self.request.user) &
+                (Q(role='owner') | Q(role='manager'))
+            ).values()
+
+        return len(r) > 0
 
 
-class ProjectVacancyView:
-    pass
+    def handle_no_permission(self):
+        return redirect(reverse_lazy('account-view', kwargs={'pk':self.kwargs['pk']}))
+
+
+
+    def dispatch(self, request, *args, **kwargs):
+        user = get_object_or_404(User, pk=kwargs.get('pk', 0))
+        status = 'invited'
+        role = 'employee'
+        vacancy = get_object_or_404(Vacancy, pk=kwargs.get('vacancy_id', 0))
+        project = vacancy.project
+        pm = ProjectMember.objects.create(
+            user=user,
+            status=status,
+            role=role,
+            project=project,
+            vacancy=vacancy
+        )
+        return super().dispatch(self, request, *args, **kwargs)
+
+
+class ProjectRequestsListView(ListView):
+    model = ProjectMember
+    paginate_by = 20
+
+    def get_queryselect(self, **kwargs):
+        return ProjectMember.objects.filter(
+            Q(project__pk=kwargs['project_id']) &
+            Q(status='entry_request')
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class UserRequestsListView(ListView):
+    model = ProjectMember
+    paginate_by = 20
+
+    def get_queryselect(self, **kwargs):
+        return ProjectMember.objects.filter(
+            Q(user__pk=kwargs['user_id']) &
+            Q(status='entry_request')
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class ProjectInvitesListView(ListView):
+    model = ProjectMember
+    paginate_by = 20
+
+    def get_queryselect(self, **kwargs):
+        return ProjectMember.objects.filter(
+            Q(project__pk=kwargs['project_id']) &
+            Q(status='invited')
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class UserInvitesListView(ListView):
+    model = ProjectMember
+    paginate_by = 20
+
+    def get_queryselect(self, **kwargs):
+        return ProjectMember.objects.filter(
+            Q(user__pk=kwargs['user_id']) &
+            Q(status='invited')
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+
+class RequestsDetailView(DetailView):
+    model = ProjectMember
+
+    def get_queryselect(self, **kwargs):
+        if 'user_id' in kwargs:
+            return ProjectMember.objects.filter(
+                Q(user__pk=kwargs['user_id']) &
+                Q(status='entry_request')
+            )
+        elif 'project_id' in kwargs:
+            return ProjectMember.objects.filter(
+                Q(project__pk=kwargs['project_id']) &
+                Q(status='entry_request')
+            )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['me'] = self.request.user
+        return context
+
+
+class InvitesDetailView(DetailView):
+    model = ProjectMember
+
+    def get_queryselect(self, **kwargs):
+        if 'user_id' in kwargs:
+            return ProjectMember.objects.filter(
+                Q(user__pk=kwargs['user_id']) &
+                Q(status='invited')
+            )
+        elif 'project_id' in kwargs:
+            return ProjectMember.objects.filter(
+                Q(project__pk=kwargs['project_id']) &
+                Q(status='invited')
+            )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['me'] = self.request.user
+        return context
+
+
+class RequestInviteActionView(UserPassesTestMixin, AccessMixin, View):
+
+    def test_func(self):
+        user = self.request.user
+        pm = get_object_or_404(ProjectMember, pk=kwargs.get('pk', 0))
+
+        return (pm.user == user or len(ProjectMember.objects.filter(
+                Q(project=pm.project) &
+                Q(status='in') &
+                Q(user=user) &
+                (Q(role='owner') | Q(role='manager'))
+            ).values()) > 0) and kwargs.get('action') in ['accept', 'reject', 'delete']
+
+    def get_success_url(self):
+        url = reverse_lazy('my-account-view')
+        if 'user_id' in kwargs:
+            pm = get_object_or_404(ProjectMember, pk=kwargs.get('pk', 0))
+            url = reverse_lazy('project-detail-view', kwargs={'pk': pm.project.id})
+        elif 'project_id' in kwargs:
+            url = reverse_lazy('project-detail-view', kwargs={'pk': kwargs['project_id']})
+        
+        return url       
+
+    def handle_no_permission(self):
+        return redirect(self.get_success_url())
+ 
+
+
+    def dispatch(self, request, *args, **kwargs):
+        pm = get_object_or_404(ProjectMember, pk=kwargs.get('pk', 0))
+        action = kwargs.get('action')
+
+        if action == 'accept':
+            pm.status = 'in'
+            pm.save()
+
+        if action == 'reject':
+            if pm.status == 'invited':
+                pm.status = 'invite_rejected'
+            if pm.status == 'entry_request':
+                pm.status = 'entry_request_rejected'
+            pm.save()
+
+        if action == 'delete':
+            if pm.status == 'entry_request' and pm.user == request.user:
+                pm.delete()
+
+            if pm.status == 'invited' and pm.user != request.user:
+                pm.delete()
+
+        return super().dispatch(self, request, *args, **kwargs)
+
+
 
 
 # Searching things
