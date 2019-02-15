@@ -3,13 +3,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <link href='{% static "mainsite/css/main-style.css" %}' rel="stylesheet" type="text/css">
     <meta name="viewport" content="width=device-width" />
     <title>{% block title %}TeamSeeker{% endblock %}</title>
 </head>
 
-<body class="white" style='{% block bodystyle %}{% endblock %}'>
+<body class="grey" style='{% block bodystyle %}{% endblock %}'>
     <header>
         <div class="header-box">
             <div class="main-navigation">
@@ -17,7 +18,7 @@
                     <span>TeamSeeker</span>
                 </div>
                 <nav>
-                    <ul>
+                    <ul class="m-0">
                         <li><a href="#">Проекты</a></li>
                         <li><a href="#">Хакатон</a></li>
                         <li><a href="#">Поиск</a></li>
@@ -37,13 +38,21 @@
             </div>
         </div>
     </header>
+    <div class="content-wrapper">
+        <div class="left-column">
+            {% block left_column %}
+            {% endblock %}
+        </div>
+        <div class="main-column">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
 
-    {% block content %}
-    {% endblock %}
 
-    <footer class="footer">
-        <p>TeamSeeker 2019</p>
-    </footer>
+    <!-- <footer class="footer">
+        TeamSeeker 2019
+    </footer> -->
     <script src="{% static "mainsite/js/main-script.js" %}"></script>
 </body>
 </html>

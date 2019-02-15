@@ -35,10 +35,16 @@ class UserLoginView(UserPassesTestMixin, AccessMixin, FormView):
 
 
 # register / login / logout stuff
-class UserRegisterView(FormView):
+class UserRegisterView(UserPassesTestMixin, AccessMixin, FormView):
     form_class = RegisterForm
     template_name = 'register-form.html'
     success_url = reverse_lazy('login-view')
+
+    def test_func(self):
+        return not self.request.user.is_authenticated
+
+    def handle_no_permission(self):
+        return redirect(reverse_lazy('my-account-view'))
 
     def form_valid(self, form):
         u = User.objects.create_user(
@@ -79,6 +85,7 @@ class UserPageView(DetailView):
         context = super().get_context_data(**kwargs)
         context['me'] = self.request.user
         context['is_my_page'] = self.request.user == context['object']
+        context['projects'] = context['object'].projectmember_set.all()
         return context
 
 
@@ -104,6 +111,7 @@ class ProjectListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['me'] = self.request.user
         return context
 
 
@@ -113,6 +121,24 @@ class ProjectDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['me'] = self.request.user
+        pm = ProjectMember.objects.filter(
+            user=self.request.user,
+            project=self.get_object()
+        )
+        if len(pm) == 0:
+            context['role'] = 'guest'
+        if len(pm) == 1:
+            if pm[0].status == 'in':
+                if pm[0].role == 'employee':
+                    context['role'] = 'employee'
+                else:
+                    context['role'] = 'manager'
+        context['edit_url'] = reverse_lazy('project-update-view', kwargs={'pk': self.get_object().id})
+        context['invites_url'] = reverse_lazy('project-invites-view', kwargs={'project_id': self.get_object().id})
+        context['requests_url'] = reverse_lazy('project-requests-view', kwargs={'project_id': self.get_object().id})
+        context['job_url'] = reverse_lazy('vacancy-create-view', kwargs={'project_id': self.get_object().id})
+        
         return context
 
 
@@ -122,6 +148,7 @@ class ProjectUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['me'] = self.request.user
         return context
 
     def get_queryset(self):
@@ -138,6 +165,7 @@ class VacancyListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['me'] = self.request.user
         return context
 
 
@@ -146,6 +174,7 @@ class VacancyDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['me'] = self.request.user
         return context
 
 class VacancyUpdateView(UserPassesTestMixin, AccessMixin, UpdateView):
@@ -290,6 +319,7 @@ class ProjectRequestsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['me'] = self.request.user
         return context
 
 
@@ -305,6 +335,7 @@ class UserRequestsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['me'] = self.request.user
         return context
 
 
@@ -320,6 +351,7 @@ class ProjectInvitesListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['me'] = self.request.user
         return context
 
 
@@ -335,6 +367,7 @@ class UserInvitesListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['me'] = self.request.user
         return context
 
 

@@ -2,59 +2,46 @@
 {% load static %}
 
 {% block title %}{{ object.get_full_name }} - TeamSeeker{% endblock %}
+
+
+{% block left_column %}
+    <div class="userprofile column-block p-0"> 
+        <div class="photo">
+            <img class="portrait" src="{{object.get_avatar_url}}" alt="портрет"/>
+            <h4 class="name">{{object.get_full_name}}</h4>
+        </div>
+    </div>
+    <div class="personal-data column-block">
+        Email: <a href="mailto:{{object.email}}">{{object.email}}</a>
+    </div>
+{% endblock %}
+
+
 {% block content %}
-    <div class="personal-main">
-        <div class="personal-menu">
-            <ul>
-                <li><a href="#">Сообщения</a></li>
-                <li><a href="#">Приглашения</a></li>
-                <li><a href="#">Редактировать</a></li>
-                <li><a href="#" class="red">Создать проект</a></li>
-            </ul>
-        </div>
-        
-         
-        <div class="userprofile">
-            <div>   
-            <div class="photo">
-                <img class="portrait" src="{{object.get_avatar_url}}" alt="портрет">
-                <h3>{{object.get_full_name}}</h3>
-            </div>
-        </div>
-            <div class="personal-data">
-                <div class="data">
-                    <p>О себе: <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet atque consequatur dolor dolore enim explicabo id in laboriosam voluptatum!</span>
-                    </p>
-                    <p>Факультет: <span>Lorem</span></p>
-                    <p>Опыт работы в команде: <span>Lorem</span></p>
-                    <p>Проектов завершено: <span>10</span></p>
-                    <p>Навыки: <span>Отсутствуют</span></p>
-                    <p>Контактный телефон: <span>+7-911-002-52-02</span></p>
-                    <p>E-mail: <span>Tolyan_Berch@chikipuki.com</span></p>
-                    <p>График: <span>не замужем</span></p>
+        <div class="card-columns">
+            {% for p in projects %}
+            <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">{{p.project.name}}</h5>
+                  <p class="card-text">Роль: {{p.get_role_display}}</p>
+                  <p class="card-text">Статус: {{p.get_status_display}}</p>
+                  <p class="card-text">
+                    <small class="text-muted">
+                        <a href="{{p.project.get_absolute_url}}">
+                            Перейти
+                        </a>
+                    </small>
+                  </p>
                 </div>
-            </div>
-        </div>
-        
-        <div class="projects-list">
-            <h2>
-                Завершенные проекты
-            </h2>
-            <div class="project-items">
-            <div class="project-item"><a href="#">Лохотрон</a></div>
-            <div class="project-item"><a href="#">Матбот</a></div>
-            <div class="project-item"><a href="#">Пулемет</a></div>
-        </div>
-        </div>
-        
-        <div class="projects-list now"><h2>Текущие проекты</h2>
-            <div class="project-items">
-                <div class="project-item"><a href="#" class="my-project">Валодя Шансон</a></div>
-                <div class="project-item"><a href="#">Красивый муж</a></div>
-                <div class="project-item"><a href="#">Черный в парике</a></div> 
-            </div>
+            </div>            
+            {% endfor %}
         </div>
 
-    </div>
+        <div class="projects-list">
+            {% for p in projects %}
+            
+            {% endfor %}
+        </div>
+
 
 {% endblock %}

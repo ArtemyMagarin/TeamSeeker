@@ -111,7 +111,7 @@ class ProjectMember(models.Model):
     project = models.ForeignKey('Project', on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(user)
+        return str(self.user)
 
 
 
@@ -146,7 +146,7 @@ class Project(models.Model):
         return reverse_lazy('project-detail-view', kwargs={'pk': self.id})
 
     def __str__(self):
-        return self.name
+        return self.last_name
 
 
 # TODO: Extend me!
